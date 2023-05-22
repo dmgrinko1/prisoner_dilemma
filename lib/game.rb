@@ -36,6 +36,7 @@ class Game
   def run_round
     decisions = make_decisions
     sentences = calculate_sentence(decisions)
+    update_decisions(decisions)
     update_scores(sentences)
   end
 
@@ -48,6 +49,13 @@ class Game
 
   def calculate_sentence(decisions)
     decisions[:opponents].map { |opponent_decision| SENTENCES[decisions[:player]][opponent_decision] }
+  end
+
+  def update_decisions(decisions)
+    player.update_decisions(decisions[:player])
+    opponents.each_with_index do |opponent, index|
+      opponent.update_decisions(decisions[:opponents][index])
+    end
   end
 
   def update_scores(sentences)
