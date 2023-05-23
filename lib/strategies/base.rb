@@ -5,7 +5,7 @@ module Strategies
   class Base
     DECISION = { testify: :testify, stay_silent: :stay_silent }.freeze
 
-    def make_decision
+    def run
       raise NotImplementedError
     end
   end

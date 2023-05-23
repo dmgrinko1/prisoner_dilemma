@@ -1,21 +1,23 @@
 # frozen_string_literal: true
 
 require_relative 'player'
+require_relative 'game_room'
 
 # class represents game process
 # Example:
-# Game.new(player, *opponents)
+# Game.new(game_pairs)
 class Game
   SENTENCES = {
     stay_silent: { stay_silent: [1, 1], testify: [3, 0] },
     testify: { stay_silent: [0, 3], testify: [2, 2] }
   }.freeze
 
-  attr_reader :player, :opponents
+  attr_reader :player, :opponents, :game_rooms
 
-  def initialize(player, *opponents)
+  def initialize(player, *opponents, game_room_factory: GameRoom)
     @player = player
     @opponents = opponents
+    @game_rooms = opponents.map { |opponent| game_room_factory.new([player, opponent]) }
   end
 
   def run_game(rounds)
@@ -24,45 +26,43 @@ class Game
 
   def show_scoreboard
     puts 'Scoreboard:'
-    opponents.each do |opponent|
-      player_score = player.scores_from[opponent.name]
-      opponent_score = opponent.scores_from[player.name]
-      puts "Player: #{player.name}, Opponent: #{opponent.name}, Score: #{player_score}:#{opponent_score}"
+    game_rooms.each do |pair|
+      players = pair.players
+
+      player1 = players[0]
+      player2 = players[1]
+
+      player1_score = player1.scores_from[player2.name]
+      player2_score = player2.scores_from[player1.name]
+
+      puts "Player: #{player1.name}, Opponent: #{player2.name}, Score: #{player1_score}:#{player2_score}"
     end
   end
 
   private
 
   def run_round
-    decisions = make_decisions
-    sentences = calculate_sentence(decisions)
-    update_decisions(decisions)
-    update_scores(sentences)
+    game_rooms.each do |game_room|
+      game_room.make_decisions
+
+      decisions = extract_players_decisions(game_room)
+      sentences = calculate_sentence(decisions)
+
+      update_scores(game_room, sentences)
+    end
   end
 
-  def make_decisions
-    player_decision = player.make_decision
-    opponent_decisions = opponents.map(&:make_decision)
-
-    { player: player_decision, opponents: opponent_decisions }
+  def extract_players_decisions(game_room)
+    { player1: game_room.decisions[game_room.players[0].name],
+      player2: game_room.decisions[game_room.players[1].name] }
   end
 
   def calculate_sentence(decisions)
-    decisions[:opponents].map { |opponent_decision| SENTENCES[decisions[:player]][opponent_decision] }
+    SENTENCES[decisions[:player1]][decisions[:player2]]
   end
 
-  def update_decisions(decisions)
-    player.update_decisions(decisions[:player])
-    opponents.each_with_index do |opponent, index|
-      opponent.update_decisions(decisions[:opponents][index])
-    end
-  end
-
-  def update_scores(sentences)
-    sentences.each_with_index do |sentence, index|
-      opponent = opponents[index]
-      player.update_score(opponent.name, sentence[0])
-      opponent.update_score(player.name, sentence[1])
-    end
+  def update_scores(game_room, sentence)
+    game_room.players[0].update_score(game_room.players.last.name, sentence[0])
+    game_room.players[1].update_score(game_room.players.first.name, sentence[1])
   end
 end

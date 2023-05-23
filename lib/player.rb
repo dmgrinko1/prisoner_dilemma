@@ -10,18 +10,15 @@ class Player
   STRATEGY_MAPPER = {
     random: Strategies::Random,
     stay_silent: Strategies::StaySilent,
-    testify: Strategies::Testify,
-    eye_for_eye: Strategies::EyeForEye
+    testify: Strategies::Testify
   }.freeze
 
-  attr_reader :name, :scores_from
-  attr_accessor :strategy, :decisions
+  attr_reader :name, :scores_from, :strategy
 
   def initialize(name, strategy = :random)
     @name = name
     @scores_from = {}
     @strategy = strategy.to_sym
-    @decisions = []
     validate_strategy
   end
 
@@ -32,10 +29,6 @@ class Player
   def update_score(player_name, sentence)
     @scores_from[player_name] ||= 0
     @scores_from[player_name] += sentence
-  end
-
-  def update_decisions(decisions)
-    @decisions << decisions
   end
 
   private

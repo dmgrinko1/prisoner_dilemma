@@ -4,7 +4,7 @@ require 'strategies/random'
 
 RSpec.describe Strategies::Random do
   subject(:strategy) { described_class.new }
-  
+
   describe '#run' do
     it 'returns a random decision' do
       decisions = Strategies::Base::DECISION.values

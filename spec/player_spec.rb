@@ -23,7 +23,7 @@ RSpec.describe Player do
     end
 
     context 'when :stay_silent strategy' do
-      before { player.strategy = :stay_silent }
+      let(:player) { Player.new('User1', :stay_silent) }
 
       it 'returns a :stay_silent decision' do
         expect(player.make_decision).to eq(Strategies::Base::DECISION[:stay_silent])
@@ -31,7 +31,7 @@ RSpec.describe Player do
     end
 
     context 'when :testify strategy' do
-      before { player.strategy = :testify }
+      let(:player) { Player.new('User1', :testify) }
 
       it 'returns a :testify decision' do
         expect(player.make_decision).to eq(Strategies::Base::DECISION[:testify])
