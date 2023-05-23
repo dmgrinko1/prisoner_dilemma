@@ -3,7 +3,7 @@
 require 'strategies/stay_silent'
 
 RSpec.describe Strategies::StaySilent do
-  let(:strategy) { Strategies::StaySilent.new }
+  subject(:strategy) { described_class.new }
 
   describe '#run' do
     it 'returns the :stay_silent decision' do

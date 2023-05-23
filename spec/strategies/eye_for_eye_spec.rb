@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'strategies/testify'
+require 'strategies/eye_for_eye'
 
-RSpec.describe Strategies::Testify do
+RSpec.describe Strategies::EyeForEye do
   subject(:strategy) { described_class.new }
 
   describe '#run' do
-    it 'returns the :testify decision' do
+    it 'kkkk' do
       expect(strategy.run).to eq(Strategies::Base::DECISION[:testify])
     end
   end
