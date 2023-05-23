@@ -18,7 +18,7 @@ In the Prisoner's Dilemma game, two players are given the choice to either "Stay
 4. Run the following command to start the game:
 
    ```shell
-   ruby main.rb
+   ruby ./lib/run_game.rb
    ```
 
 5. Follow the prompts to enter the player names and select their strategies.
